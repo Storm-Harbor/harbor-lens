@@ -12,8 +12,11 @@
     "test": "vitest run --configLoader runner",
     "test:coverage": "vitest run --configLoader runner --coverage",
     "test:browser": "playwright test",
-    "format:check": "prettier --check src test tools index.html *.js *.mjs *.json .github/workflows/*.yml",
-    "format": "prettier --write src test tools index.html *.js *.mjs *.json .github/workflows/*.yml"
+    "test:tooling": "node --test test/tooling/*.test.mjs",
+    "compose:up": "node tools/compose-local.mjs up",
+    "compose:down": "node tools/compose-local.mjs down",
+    "format:check": "prettier --check src test tools index.html *.js *.mjs *.json compose.yaml .github/workflows/*.yml",
+    "format": "prettier --write src test tools index.html *.js *.mjs *.json compose.yaml .github/workflows/*.yml"
   },
   "devDependencies": {
     "@playwright/test": "1.65.0",

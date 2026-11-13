@@ -17,8 +17,6 @@
 !licenses/
 !licenses/**
 !src/
-!licenses/
-!licenses/**
 !src/**
 **/._*
 **/.DS_Store
