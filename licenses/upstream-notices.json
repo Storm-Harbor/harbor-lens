@@ -1,0 +1,9 @@
+{
+  "react-remove-scroll-bar@2.3.8": {
+    "file": "react-remove-scroll-bar-LICENSE.txt",
+    "license": "MIT",
+    "sha256": "a79aae0c0f21990d9d963bb3c5a79cdcea9a46f8523ba55c58d7fe776b6ebc84",
+    "source": "https://api.github.com/repos/theKashey/react-remove-scroll-bar/git/blobs/7c08c3990396ecefd90f99ff5d9a34f26f5b5616",
+    "note": "The npm2.3.8 tarball declares MIT but omits LICENSE; preserve the reviewed upstream license blob. Its published gitHead is unavailable upstream."
+  }
+}
