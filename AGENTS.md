@@ -1,0 +1,13 @@
+# Harbor Lens
+
+Apply the shared Storm Harbor guidance at `../../.github/AGENTS.md` and its four specifications. In a standalone clone, use https://github.com/Storm-Harbor/.github/blob/main/AGENTS.md. Preserve user changes and legal notices. Technical material is English.
+
+This repository owns the separate Harbor Lens browser application. The product website remains in `storm-harbor-app`. Go 1.26.x APIs, CLI, GitHub App/bots, collectors and orchestration belong in `storm-harbor-control-plane`. Do not add a production Node server here.
+
+Initial owner: issue #1 under control-plane Journey #16 / Epic #17. Branch `1-feat-synthetic-sandbox`, base `main`. User merges manually. Initial delivery is synthetic local presentation only: no real connections, secrets, real authentication, cloud mutations, AI calls, customer metrics. Browser filtering is not authoritative authorization. Live work waits for published core contracts.
+
+Owner refinements, 2026-11-13: same frontend technologies as the selected reference console: React 19/Vite 8, JSX, React Router, Tailwind 4, shadcn/ui radix-nova, Radix, Lucide, i18next and Recharts. Use Storm Harbor's own website colors: #326ce5, #2554b8, #84a7ef, #111820, #151e28 and #f4f6f8. Do not import private console packages, branding or auth/business rules.
+
+Use Node 26.10.0 and Yarn 4.18.0 strict PnP, local cache and yarn.lock. No npm lockfile or node_modules. `yarn install --immutable`, `yarn build`, `yarn test:coverage`, `yarn test:browser` are relevant checks. Independently report statements, branches, functions and lines; target 100% each, keeping all production modules. Record prototype versus production gaps. All UI text uses en/pt-BR catalogs with parity. Exclude metadata/dependencies from static artifacts. No runtime network API or browser persistence belongs to the synthetic slice.
+
+Planned protected access must support company-selected SSO (OIDC first, qualified SAML adapter later), Google and GitHub sign-in, with mandatory verified MFA. Core Go owns provider tokens, safe callbacks, HttpOnly server sessions and MFA lifecycle; scope/membership and provider IAM remain independent. Upstream login alone does not establish MFA. No protected data before assurance; no automatic email/domain account linking. See the core Lens specification for accepted details. The owner later approved a clearly fake demo sign-in/MFA journey without credentials and a Cloud Run preview at lens.stormharbor.io after independent Terraform/WIF/edge qualification. No Pages deployment belongs here. Do not implement misleading real-login buttons or call identity providers in the synthetic sandbox.

@@ -1,0 +1,13 @@
+:root {
+  --storm-blue: #326ce5;
+  --storm-blue-dark: #2554b8;
+  --storm-blue-light: #84a7ef;
+  --storm-ink: #111820;
+  --storm-panel: #151e28;
+  --storm-paper: #f4f6f8;
+  --blue: var(--storm-blue);
+  --ink: var(--storm-ink);
+  --nav: var(--storm-panel);
+  --paper: var(--storm-paper);
+  --border: #e4e9f2;
+}

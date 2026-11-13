@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+test-results/
+playwright-report/
+._*
+.DS_Store
+.pnp.*
+.yarn/*
+!.yarn/releases/
+.vite/
