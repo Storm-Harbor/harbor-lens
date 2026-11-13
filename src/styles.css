@@ -1264,3 +1264,90 @@ dialog select {
     right: 24px;
   }
 }
+
+/* Logical placement keeps the same Storm Harbor layout in every script. */
+.sidebar {
+  left: auto;
+  right: auto;
+  inset-inline-start: 0;
+}
+.shell {
+  margin-left: 0;
+  margin-inline-start: 248px;
+}
+nav button,
+table {
+  text-align: start;
+}
+.provider-buttons svg:last-child {
+  margin-left: 0;
+  margin-inline-start: auto;
+}
+.access-panel > select {
+  right: auto;
+  inset-inline-end: 30px;
+  max-width: min(210px, calc(100% - 48px));
+}
+.topbar select {
+  max-width: 140px;
+}
+.page-heading p,
+.mode-strip,
+.scope-note,
+.sidebar-bottom,
+footer {
+  overflow-wrap: anywhere;
+}
+:dir(rtl) .lucide-arrow-right {
+  transform: scaleX(-1);
+}
+:dir(rtl) .harbor-icon {
+  margin-right: 0;
+  margin-inline-end: 11px;
+}
+:dir(rtl) .topology li:not(:last-child)::after {
+  right: auto;
+  left: -20px;
+  content: "←";
+}
+:dir(rtl) .run-controls .button {
+  margin-right: 0;
+  margin-inline-end: 5px;
+}
+.mono {
+  unicode-bidi: isolate;
+  direction: ltr;
+}
+@media (max-width: 1100px) {
+  .shell {
+    margin-inline-start: 210px;
+  }
+}
+@media (max-width: 760px) {
+  .shell {
+    margin-inline-start: 0;
+  }
+  :dir(rtl) .sidebar {
+    transform: translateX(100%);
+  }
+  :dir(rtl) .sidebar.open {
+    transform: translateX(0);
+  }
+  :dir(rtl) .topology li:not(:last-child)::after {
+    left: auto;
+    right: 49%;
+    content: "↓";
+  }
+  .topbar select {
+    max-width: 110px;
+  }
+  .page-heading .button {
+    max-width: 100%;
+  }
+  .button {
+    white-space: normal;
+  }
+  footer {
+    flex-wrap: wrap;
+  }
+}

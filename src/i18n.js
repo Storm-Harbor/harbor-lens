@@ -1,6 +1,7 @@
 import { createInstance } from "i18next";
 import { initReactI18next } from "react-i18next";
 import { catalogs } from "./catalogs.mjs";
+import { defaultLocale, localeOptions } from "./locales/config";
 
 const i18n = createInstance();
 i18n.use(initReactI18next).init({
@@ -10,8 +11,10 @@ i18n.use(initReactI18next).init({
       { translation },
     ]),
   ),
-  lng: "en",
-  fallbackLng: "en",
+  lng: defaultLocale,
+  fallbackLng: defaultLocale,
+  supportedLngs: localeOptions.map((locale) => locale.code),
+  load: "currentOnly",
   initImmediate: false,
   interpolation: { escapeValue: false },
 });

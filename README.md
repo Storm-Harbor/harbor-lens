@@ -1,7 +1,7 @@
 # Harbor Lens
 Harbor Lens is Storm Harbor's separate operational frontend. This first delivery is a synthetic demo preview: simulated GitHub/Google/company SSO and mandatory MFA, inventory, illustrative metrics, accessible topology and recovery simulation/history. It makes no identity-provider, cloud, core API or AI call and stores no browser credentials or durable data. Reload or logout discards the demo session.
 
-The selected frontend uses React 19, Vite 8, JavaScript/JSX, React Router, Tailwind CSS 4, shadcn/ui radix-nova/Radix, Lucide, i18next and Recharts. Colors follow the Storm Harbor product website. Technical documentation is English; the initial application catalogs are English and Brazilian Portuguese. The product website stays in its existing repository.
+The selected frontend uses React 19, Vite 8, JavaScript/JSX, React Router, Tailwind CSS 4, shadcn/ui radix-nova/Radix, Lucide, i18next and Recharts. Colors follow the Storm Harbor product website. Technical documentation is English; the application has the same 25 locales as stormharbor.io, with en-GB as default and RTL layouts for Arabic, Hebrew and Urdu. Every catalog includes all 109 UI/error/demo messages. The product website stays in its existing repository.
 
 ## Development and validation
 
@@ -18,7 +18,7 @@ node .yarn/releases/yarn-4.18.0.cjs test:browser
 
 `dev` starts Vite locally. Browser acceptance normally serves the built artifact on loopback port 4179. Set `LENS_TEST_ORIGIN` to an owned local container origin to validate the actual runtime. `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` optionally selects an already installed matching Chromium. Do not point ordinary tests at customer or production environments.
 
-Vitest includes all maintained executable frontend source, including bootstrap, i18n and unimported modules; targets are 100% independently for statements, branches, functions and lines. Playwright records eight separate browser scenarios. Mocks and synthetic filtering do not qualify authoritative backend identity, tenancy, workload permissions or real recovery. Coverage reports, traces and screenshots are generated artifacts.
+Vitest includes all maintained executable frontend source, including bootstrap, i18n and unimported modules; targets are 100% independently for statements, branches, functions and lines. Playwright records 33 separate browser scenarios (8 sandbox journeys plus 25 locale journeys). Mocks and synthetic filtering do not qualify authoritative backend identity, tenancy, workload permissions or real recovery. Coverage reports, traces and screenshots are generated artifacts.
 
 ## Cloud Run delivery
 

@@ -1,253 +1,53 @@
+import locale0 from "./locales/en-GB.json" with { type: "json" };
+import locale1 from "./locales/en-US.json" with { type: "json" };
+import locale2 from "./locales/es-ES.json" with { type: "json" };
+import locale3 from "./locales/ca-ES.json" with { type: "json" };
+import locale4 from "./locales/pt-PT.json" with { type: "json" };
+import locale5 from "./locales/pt-BR.json" with { type: "json" };
+import locale6 from "./locales/it-IT.json" with { type: "json" };
+import locale7 from "./locales/ru-RU.json" with { type: "json" };
+import locale8 from "./locales/de-DE.json" with { type: "json" };
+import locale9 from "./locales/fr-FR.json" with { type: "json" };
+import locale10 from "./locales/uk-UA.json" with { type: "json" };
+import locale11 from "./locales/et-EE.json" with { type: "json" };
+import locale12 from "./locales/pl-PL.json" with { type: "json" };
+import locale13 from "./locales/bg-BG.json" with { type: "json" };
+import locale14 from "./locales/zh-Hans.json" with { type: "json" };
+import locale15 from "./locales/hi-IN.json" with { type: "json" };
+import locale16 from "./locales/ja-JP.json" with { type: "json" };
+import locale17 from "./locales/he-IL.json" with { type: "json" };
+import locale18 from "./locales/ur-PK.json" with { type: "json" };
+import locale19 from "./locales/af-ZA.json" with { type: "json" };
+import locale20 from "./locales/ar.json" with { type: "json" };
+import locale21 from "./locales/ko-KR.json" with { type: "json" };
+import locale22 from "./locales/tr-TR.json" with { type: "json" };
+import locale23 from "./locales/id-ID.json" with { type: "json" };
+import locale24 from "./locales/vi-VN.json" with { type: "json" };
+
 export const catalogs = {
-  en: {
-    accessTitle: "Recovery begins with a clear view.",
-    accessText:
-      "Explore infrastructure, map dependencies and rehearse recovery in a safe synthetic workspace.",
-    demoLogin: "Demo sign-in",
-    welcome: "Explore Harbor Lens",
-    demoMfa: "Mandatory MFA · simulation",
-    fakeLoginNote:
-      "This is a fake login for the sandbox. No identity provider is contacted and no real access is granted.",
-    fakeMfaNote:
-      "Simulate the second factor to continue. Do not enter a real MFA code, password or recovery code.",
-    verifyDemo: "Simulate MFA verification",
-    back: "Choose another provider",
-    companySso: "Company SSO",
-    continueWith: "Simulate",
-    sessionNote:
-      "Session only. Reloading ends the demo session and discards all synthetic changes.",
-    logout: "Leave sandbox",
-    notFound: "Page unavailable",
-    overview: "Overview",
-    inventory: "Infrastructure",
-    topology: "Topology",
-    recovery: "Recovery",
-    activity: "Run history",
-    workspace: "DEMO WORKSPACE",
-    scope: "Project",
-    language: "Language",
-    menu: "Toggle navigation",
-    skip: "Skip to content",
-    sandbox: "Sandbox",
-    synthetic: "Synthetic data",
-    noLive: "No live connections",
-    observation: "Observation",
-    operation: "Operation",
-    unavailable: "Planned · unavailable",
-    subtitle: "Your recovery landscape, in one place.",
-    intro:
-      "Explore connected infrastructure and rehearse a recovery journey with synthetic data.",
-    add: "Add synthetic Harbor",
-    reset: "Reset sandbox",
-    resetNote:
-      "Reset removes all simulated runs and added Harbors from this browser session.",
-    harbors: "Harbors",
-    resources: "Resources",
-    signals: "Fresh signals",
-    simulations: "Simulations",
-    simulated: "Simulated",
-    landscape: "Infrastructure landscape",
-    all: "View infrastructure",
-    name: "Harbor",
-    provider: "Provider",
-    region: "Region",
-    health: "Signal",
-    healthy: "Healthy",
-    attention: "Attention",
-    unknown: "Unknown",
-    freshness: "Fixture age (min)",
-    notMeasured: "Not measured",
-    insight: "Readiness needs evidence",
-    insightText:
-      "Missing signals stay unknown. Review freshness before making a recovery decision. This demo does not measure actual recovery readiness.",
-    cpu: "CPU utilization",
-    cpuNote: "Synthetic readings · illustrative trend",
-    target: "Recovery target",
-    rto: "RTO target",
-    rpo: "RPO target",
-    targetsNote: "Illustrative targets, not measured results.",
-    topologyText:
-      "An illustrative dependency map for the selected demo project. No cloud discovery has run.",
-    depends: "depends on",
-    gateway: "Gateway",
-    workloads: "Kubernetes workloads",
-    database: "Managed PostgreSQL",
-    backups: "Backup store",
-    diagramLabel: "Synthetic dependency chain",
-    recoveryText:
-      "Walk through a synthetic exercise. Nothing is provisioned, restored or deleted.",
-    journey: "Exercise journey",
-    prepare: "Prepare target",
-    restore: "Restore data",
-    verify: "Verify service",
-    start: "Start simulation",
-    advance: "Complete next phase",
-    cancel: "Cancel simulation",
-    running: "Running",
-    completed: "Completed",
-    cancelled: "Cancelled",
-    id: "Run",
-    status: "Status",
-    phase: "Phase",
-    noRuns: "No simulations yet",
-    noRunsText: "Start an exercise from Recovery to build a synthetic history.",
-    historyText:
-      "Session-only synthetic history. Reloading discards it. No evidence is published or stored.",
-    modeNote:
-      "Observation and operation need published core APIs, authoritative identity and independent permission. They cannot be enabled in this sandbox.",
-    scopeNote:
-      "Demo filtering only. Real authorization belongs to the core API.",
-    version: "LOCAL PROTOTYPE · ALPHA",
-    dialogTitle: "Add a synthetic Harbor",
-    label: "Display name",
-    labelHint:
-      "1–60 characters. Use an invented label; do not enter credentials or private identifiers.",
-    create: "Create fixture",
-    close: "Close",
-    invalidScope: "Select an available demo project.",
-    invalidLabel: "Enter a display name between 1 and 60 characters.",
-    invalidProvider: "Select an available provider.",
-    limit: "This demo project allows up to 12 Harbors.",
-    invalidTarget: "Select a Harbor in this demo project.",
-    alreadyRunning: "Complete or cancel the current simulation first.",
-    invalidRun:
-      "That simulation is unavailable in this project or has already ended.",
-    addDone: "Synthetic Harbor added.",
-    startDone: "Simulation started. No live action occurred.",
-    advanceDone: "Simulation updated.",
-    resetDone: "Sandbox reset.",
-    inventoryText:
-      "Synthetic provider and resource projections. Provider names do not imply implemented adapters.",
-    unknownNote: "Unknown readings are deliberately left empty.",
-    source: "Source & plan",
-    browserOnly: "Browser only · no saved credentials",
-    group: "Demo Harbor group",
-    legend: "Illustrative data · not a readiness certification",
-  },
-  "pt-BR": {
-    accessTitle: "Recuperação começa com uma visão clara.",
-    accessText:
-      "Explore infraestrutura, mapeie dependências e ensaie a recuperação em um workspace sintético.",
-    demoLogin: "Login de demonstração",
-    welcome: "Explore o Harbor Lens",
-    demoMfa: "MFA obrigatória · simulação",
-    fakeLoginNote:
-      "Este é um login fictício para o sandbox. Nenhum provedor é contatado e nenhum acesso real é concedido.",
-    fakeMfaNote:
-      "Simule o segundo fator para continuar. Não informe códigos reais de MFA, senhas ou códigos de recuperação.",
-    verifyDemo: "Simular verificação de MFA",
-    back: "Escolher outro provedor",
-    companySso: "SSO corporativo",
-    continueWith: "Simular",
-    sessionNote:
-      "Apenas nesta sessão. Recarregar encerra o acesso e descarta as alterações sintéticas.",
-    logout: "Sair do sandbox",
-    notFound: "Página indisponível",
-    overview: "Visão geral",
-    inventory: "Infraestrutura",
-    topology: "Topologia",
-    recovery: "Recuperação",
-    activity: "Histórico",
-    workspace: "WORKSPACE DE DEMONSTRAÇÃO",
-    scope: "Projeto",
-    language: "Idioma",
-    menu: "Alternar navegação",
-    skip: "Ir para o conteúdo",
-    sandbox: "Sandbox",
-    synthetic: "Dados sintéticos",
-    noLive: "Sem conexões reais",
-    observation: "Observação",
-    operation: "Operação",
-    unavailable: "Planejado · indisponível",
-    subtitle: "Seu cenário de recuperação, em um só lugar.",
-    intro:
-      "Explore a infraestrutura e ensaie uma jornada de recuperação com dados sintéticos.",
-    add: "Adicionar Harbor sintético",
-    reset: "Reiniciar sandbox",
-    resetNote:
-      "Reiniciar remove as simulações e os Harbors adicionados nesta sessão do navegador.",
-    harbors: "Harbors",
-    resources: "Recursos",
-    signals: "Sinais recentes",
-    simulations: "Simulações",
-    simulated: "Simulado",
-    landscape: "Cenário de infraestrutura",
-    all: "Ver infraestrutura",
-    name: "Harbor",
-    provider: "Provedor",
-    region: "Região",
-    health: "Sinal",
-    healthy: "Saudável",
-    attention: "Atenção",
-    unknown: "Desconhecido",
-    freshness: "Idade do dado simulado (min)",
-    notMeasured: "Não medido",
-    insight: "Prontidão exige evidências",
-    insightText:
-      "Sinais ausentes continuam desconhecidos. Revise os dados antes de decidir sobre a recuperação. Esta demonstração não mede prontidão real de recuperação.",
-    cpu: "Utilização de CPU",
-    cpuNote: "Leituras sintéticas · tendência ilustrativa",
-    target: "Destino da recuperação",
-    rto: "Meta de RTO",
-    rpo: "Meta de RPO",
-    targetsNote: "Metas ilustrativas, não resultados medidos.",
-    topologyText:
-      "Mapa ilustrativo de dependências do projeto selecionado. Nenhuma descoberta na cloud foi executada.",
-    depends: "depende de",
-    gateway: "Gateway",
-    workloads: "Workloads Kubernetes",
-    database: "PostgreSQL gerenciado",
-    backups: "Armazenamento de backup",
-    diagramLabel: "Cadeia sintética de dependências",
-    recoveryText:
-      "Percorra um exercício sintético. Nada será provisionado, restaurado ou excluído.",
-    journey: "Jornada do exercício",
-    prepare: "Preparar destino",
-    restore: "Restaurar dados",
-    verify: "Verificar serviço",
-    start: "Iniciar simulação",
-    advance: "Concluir próxima fase",
-    cancel: "Cancelar simulação",
-    running: "Em andamento",
-    completed: "Concluído",
-    cancelled: "Cancelado",
-    id: "Execução",
-    status: "Status",
-    phase: "Fase",
-    noRuns: "Nenhuma simulação ainda",
-    noRunsText:
-      "Inicie um exercício em Recuperação para criar um histórico sintético.",
-    historyText:
-      "Histórico sintético desta sessão. Recarregar descarta os dados. Nenhuma evidência é publicada ou armazenada.",
-    modeNote:
-      "Observação e operação exigem APIs publicadas do núcleo, identidade verificada e permissão independente. Não podem ser ativadas neste sandbox.",
-    scopeNote:
-      "Filtro demonstrativo. A autorização real pertence à API do núcleo.",
-    version: "PROTÓTIPO LOCAL · ALPHA",
-    dialogTitle: "Adicionar Harbor sintético",
-    label: "Nome de exibição",
-    labelHint:
-      "1–60 caracteres. Use um nome inventado; não informe credenciais ou identificadores privados.",
-    create: "Criar dado sintético",
-    close: "Fechar",
-    invalidScope: "Selecione um projeto de demonstração disponível.",
-    invalidLabel: "Informe um nome entre 1 e 60 caracteres.",
-    invalidProvider: "Selecione um provedor disponível.",
-    limit: "Este projeto de demonstração permite até 12 Harbors.",
-    invalidTarget: "Selecione um Harbor deste projeto de demonstração.",
-    alreadyRunning: "Conclua ou cancele a simulação atual primeiro.",
-    invalidRun:
-      "A simulação está indisponível neste projeto ou já foi encerrada.",
-    addDone: "Harbor sintético adicionado.",
-    startDone: "Simulação iniciada. Nenhuma ação real foi executada.",
-    advanceDone: "Simulação atualizada.",
-    resetDone: "Sandbox reiniciado.",
-    inventoryText:
-      "Projeções sintéticas de provedores e recursos. Os nomes não indicam adaptadores implementados.",
-    unknownNote: "Leituras desconhecidas permanecem vazias.",
-    source: "Código e plano",
-    browserOnly: "Apenas navegador · sem credenciais salvas",
-    group: "Grupo de Harbors demonstrativo",
-    legend: "Dados ilustrativos · não certifica prontidão",
-  },
+  "en-GB": locale0,
+  "en-US": locale1,
+  "es-ES": locale2,
+  "ca-ES": locale3,
+  "pt-PT": locale4,
+  "pt-BR": locale5,
+  "it-IT": locale6,
+  "ru-RU": locale7,
+  "de-DE": locale8,
+  "fr-FR": locale9,
+  "uk-UA": locale10,
+  "et-EE": locale11,
+  "pl-PL": locale12,
+  "bg-BG": locale13,
+  "zh-Hans": locale14,
+  "hi-IN": locale15,
+  "ja-JP": locale16,
+  "he-IL": locale17,
+  "ur-PK": locale18,
+  "af-ZA": locale19,
+  ar: locale20,
+  "ko-KR": locale21,
+  "tr-TR": locale22,
+  "id-ID": locale23,
+  "vi-VN": locale24,
 };

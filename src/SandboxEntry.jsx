@@ -4,6 +4,8 @@ import { I18nextProvider } from "react-i18next";
 import { BrowserRouter } from "react-router-dom";
 import { ShieldCheck, Code2, Building2, ArrowRight, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LocaleSelect } from "@/components/ui/locale-select";
+import { localeInfo } from "@/locales/config";
 import App from "@/App";
 import i18n from "@/i18n";
 import mark from "@/mark.svg";
@@ -13,6 +15,7 @@ export function SandboxAccess() {
   const [provider, setProvider] = useState("");
   useEffect(() => {
     document.documentElement.lang = i18n.resolvedLanguage;
+    document.documentElement.dir = localeInfo[i18n.resolvedLanguage].dir;
   }, [i18n.resolvedLanguage]);
   const [session, setSession] = useState(false);
   if (session)
@@ -48,17 +51,7 @@ export function SandboxAccess() {
         <small>{t("noLive")}</small>
       </section>
       <section className="access-panel">
-        <label className="sr-only" htmlFor="entry-locale">
-          {t("language")}
-        </label>
-        <select
-          id="entry-locale"
-          value={i18n.resolvedLanguage}
-          onChange={(e) => i18n.changeLanguage(e.target.value)}
-        >
-          <option value="en">English</option>
-          <option value="pt-BR">Português</option>
-        </select>
+        <LocaleSelect id="entry-locale" i18n={i18n} label={t("language")} />
         <div className="access-card">
           <span className="sandbox-badge">{t("demoLogin")}</span>
           <h2>{t(provider ? "demoMfa" : "welcome")}</h2>
@@ -68,7 +61,7 @@ export function SandboxAccess() {
               <div className="demo-identity">
                 <ShieldCheck aria-hidden="true" />
                 <span>
-                  {provider}
+                  {provider === "companySso" ? t("companySso") : provider}
                   <small>demo@stormharbor.example</small>
                 </span>
               </div>
@@ -84,11 +77,12 @@ export function SandboxAccess() {
               {[
                 ["GitHub", Code2],
                 ["Google", Globe],
-                [t("companySso"), Building2],
+                ["companySso", Building2],
               ].map(([name, Icon]) => (
                 <Button key={name} onClick={() => setProvider(name)}>
                   <Icon aria-hidden="true" />
-                  {t("continueWith")} {name}
+                  {t("continueWith")}{" "}
+                  {name === "companySso" ? t("companySso") : name}
                   <ArrowRight aria-hidden="true" />
                 </Button>
               ))}

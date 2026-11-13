@@ -7,7 +7,7 @@ import { SandboxAccess } from "../src/SandboxEntry";
 import i18n from "../src/i18n";
 
 beforeEach(async () => {
-  await i18n.changeLanguage("en");
+  await i18n.changeLanguage("en-GB");
 });
 const click = (user, name) =>
   user.click(screen.getByRole("button", { name, exact: true }));
@@ -78,7 +78,7 @@ test("navigation, localization, unknown signals, diagram alternatives and unavai
   expect(screen.getByText("Fixture age (min): Unknown")).toBeVisible();
   await go(user, "topology");
   expect(screen.getAllByRole("listitem")).toHaveLength(4);
-  for (const lang of ["pt-BR", "en"]) {
+  for (const lang of ["pt-BR", "en-GB"]) {
     await user.selectOptions(document.getElementById("locale"), lang);
     for (const view of [
       "overview",

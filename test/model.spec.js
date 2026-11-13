@@ -11,10 +11,10 @@ import {
 import { catalogs } from "../src/catalogs.mjs";
 
 test("catalogs have complete key parity and nonempty values", () => {
-  assert.deepEqual(
-    Object.keys(catalogs.en).sort(),
-    Object.keys(catalogs["pt-BR"]).sort(),
-  );
+  const expected = Object.keys(catalogs["en-GB"]).sort();
+  assert.equal(Object.keys(catalogs).length, 25);
+  for (const catalog of Object.values(catalogs))
+    assert.deepEqual(Object.keys(catalog).sort(), expected);
   for (const catalog of Object.values(catalogs))
     for (const text of Object.values(catalog)) assert.ok(text.trim());
 });

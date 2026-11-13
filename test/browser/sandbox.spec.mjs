@@ -52,7 +52,7 @@ test("overview, infrastructure, topology and catalog parity through actual UI", 
       .getByRole("list", { name: "Synthetic dependency chain" })
       .getByRole("listitem"),
   ).toHaveCount(4);
-  for (const locale of ["pt-BR", "en"]) {
+  for (const locale of ["pt-BR", "en-GB"]) {
     await page.locator("#locale").selectOption(locale);
     for (const view of [
       "overview",

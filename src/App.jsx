@@ -21,6 +21,8 @@ import {
   YAxis,
 } from "recharts";
 import { Button } from "@/components/ui/button";
+import { LocaleSelect } from "@/components/ui/locale-select";
+import { localeInfo } from "@/locales/config";
 import {
   createState,
   scopeData,
@@ -176,6 +178,7 @@ export default function App({ onLogout }) {
 
   useEffect(() => {
     document.documentElement.lang = i18n.resolvedLanguage;
+    document.documentElement.dir = localeInfo[i18n.resolvedLanguage].dir;
   }, [i18n.resolvedLanguage]);
   useEffect(() => {
     if (!menuOpen) return;
@@ -309,17 +312,7 @@ export default function App({ onLogout }) {
           </div>
           <div className="topbar-end">
             <span className="sandbox-badge">{t("sandbox")}</span>
-            <label className="sr-only" htmlFor="locale">
-              {t("language")}
-            </label>
-            <select
-              id="locale"
-              value={i18n.resolvedLanguage}
-              onChange={(e) => i18n.changeLanguage(e.target.value)}
-            >
-              <option value="en">English</option>
-              <option value="pt-BR">Português</option>
-            </select>
+            <LocaleSelect id="locale" i18n={i18n} label={t("language")} />
             <span className="avatar" aria-hidden="true">
               HL
             </span>
@@ -552,13 +545,13 @@ export default function App({ onLogout }) {
                     <div>
                       <span>{t("rto")}</span>
                       <strong>
-                        30 <small>min</small>
+                        30 <small>{t("minute")}</small>
                       </strong>
                     </div>
                     <div>
                       <span>{t("rpo")}</span>
                       <strong>
-                        15 <small>min</small>
+                        15 <small>{t("minute")}</small>
                       </strong>
                     </div>
                   </div>
