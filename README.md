@@ -22,7 +22,7 @@ Vitest includes all maintained executable frontend source, including bootstrap, 
 
 ## Cloud Run delivery
 
-The owner selected `https://lens.stormharbor.io/` on Cloud Run, following a static-container strategy. GitHub Pages is not the Lens host. The Dockerfile pins Node and non-root Chainguard Nginx by digest; only built static files enter the final runtime. Node is a build tool. Nginx listens on 8080, exposes a dependency-free `/healthz`, serves known SPA routes, rejects unknown/API/source paths and prohibits runtime network connections through CSP. No authenticated backend exists in this slice.
+The owner selected `https://lens.stormharbor.io/` on Cloud Run, following a static-container strategy. GitHub Pages is not the Lens host. The Dockerfile pins Node and non-root Chainguard Nginx by digest; only built static files enter the final runtime. The build preserves the production dependency graph's license/notice texts in `THIRD_PARTY_NOTICES.txt`; no private/build-only package is included. Node is a build tool. Nginx listens on 8080, exposes a dependency-free `/healthz`, serves known SPA routes, rejects unknown/API/source paths and prohibits runtime network connections through CSP. No authenticated backend exists in this slice.
 
 ```sh
 docker build --platform linux/amd64 -t harbor-lens:demo .

@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "vite --configLoader runner --host 127.0.0.1",
-    "build": "node tools/check-toolchain.cjs && vite build --configLoader runner && node tools/check-artifact.mjs",
+    "build": "node tools/check-toolchain.cjs && vite build --configLoader runner && node tools/notices.cjs && node tools/check-artifact.mjs",
     "test": "vitest run --configLoader runner",
     "test:coverage": "vitest run --configLoader runner --coverage",
     "test:browser": "playwright test",

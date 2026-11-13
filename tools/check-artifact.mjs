@@ -14,6 +14,7 @@ for (const dir of ["dist", "dist/assets"]) {
 for (const file of files)
   if (
     file !== "index.html" &&
+    file !== "THIRD_PARTY_NOTICES.txt" &&
     !/^assets\/[A-Za-z0-9_-]+\.(js|css|svg)$/.test(file)
   )
     throw new Error("Unexpected static artifact.");

@@ -16,7 +16,9 @@ for (const path of [
   "/history",
 ])
   assets.set(path, "dist/index.html");
+assets.set("/THIRD_PARTY_NOTICES.txt", "dist/THIRD_PARTY_NOTICES.txt");
 const types = {
+  txt: "text/plain",
   html: "text/html",
   js: "text/javascript",
   css: "text/css",

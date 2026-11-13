@@ -6,8 +6,9 @@ WORKDIR /app
 COPY .yarn/releases/yarn-4.18.0.cjs .yarn/releases/yarn-4.18.0.cjs
 COPY package.json yarn.lock .yarnrc.yml ./
 RUN node .yarn/releases/yarn-4.18.0.cjs install --immutable
-COPY index.html vite.config.js ./
-COPY tools/check-toolchain.cjs tools/check-artifact.mjs ./tools/
+COPY index.html vite.config.js LICENSE ./
+COPY tools/check-toolchain.cjs tools/check-artifact.mjs tools/notices.cjs ./tools/
+COPY licenses ./licenses
 COPY src ./src
 RUN node .yarn/releases/yarn-4.18.0.cjs build
 

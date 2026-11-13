@@ -294,6 +294,10 @@ test("sandbox policy blocks network APIs and exposes no application/API routes",
     if (new URL(req.url()).origin !== new URL(page.url()).origin)
       external.push(req.url());
   });
+  const notices = await page.request.get("/THIRD_PARTY_NOTICES.txt");
+  expect(notices.status()).toBe(200);
+  expect(await notices.text()).toContain("react@19.2.8");
+  expect(await notices.text()).toContain("Permission is hereby granted");
   const blocked = await page.evaluate(async () => {
     try {
       await fetch("https://invalid.example/never-send");
