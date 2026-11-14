@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom/vitest";
-import { afterEach } from "vitest";
+import { afterEach, vi } from "vitest";
 import { cleanup } from "@testing-library/react";
 class ResizeObserver {
   observe() {}
@@ -7,4 +7,5 @@ class ResizeObserver {
   disconnect() {}
 }
 globalThis.ResizeObserver = ResizeObserver;
+vi.mock("@joint/core", () => import("./joint-runtime.js"));
 afterEach(cleanup);

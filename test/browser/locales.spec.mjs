@@ -72,6 +72,9 @@ for (const [code, title, dir] of baseline) {
     await expect(
       page.getByRole("heading", { level: 1, name: title, exact: true }),
     ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: c.readiness, exact: true }),
+    ).toBeVisible();
     expect(
       await page
         .locator("#locale option")
@@ -104,6 +107,14 @@ for (const [code, title, dir] of baseline) {
     await expect(
       page.getByRole("cell", { name: c.cancelled, exact: true }),
     ).toBeVisible();
+    await page.locator("#scenario").selectOption("backupFailure");
+    await page.getByRole("button", { name: c.start, exact: true }).click();
+    for (let phase = 0; phase < 2; phase++)
+      await page.getByRole("button", { name: c.advance, exact: true }).click();
+    await expect(page.getByRole("note")).toContainText(c.backupFailure);
+    await page.getByRole("button", { name: c.retry, exact: true }).click();
+    await expect(page.locator("#scenario")).toBeDisabled();
+    await page.getByRole("button", { name: c.cancel, exact: true }).click();
     await page.locator("#add").click();
     await expect(page.getByRole("dialog")).toBeVisible();
     await page.getByRole("button", { name: c.create, exact: true }).click();
@@ -126,6 +137,9 @@ for (const [code, title, dir] of baseline) {
       "aria-expanded",
       "false",
     );
+    await expect(page.locator(".joint-element")).toHaveCount(8);
+    await page.getByRole("button", { name: c.zoomIn, exact: true }).click();
+    await page.getByRole("button", { name: c.fit, exact: true }).click();
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,

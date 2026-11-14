@@ -1,7 +1,7 @@
 # Harbor Lens
-Harbor Lens is Storm Harbor's separate operational frontend. This first delivery is a synthetic demo preview: simulated GitHub/Google/company SSO and mandatory MFA, inventory, illustrative metrics, accessible topology and recovery simulation/history. It makes no identity-provider, cloud, core API or AI call and stores no browser credentials or durable data. Reload or logout discards the demo session.
+Harbor Lens is Storm Harbor's separate operational frontend. This delivery is a synthetic demo preview: simulated GitHub/Google/company SSO and mandatory MFA, inventory, readiness/gap examples, interactive JointJS topology, YAML drafts and recoveries with success, failure, cancellation, retry and phase evidence. It makes no identity-provider, cloud, core API or AI call and stores no browser credentials or durable data. Reload or logout discards the demo session.
 
-The selected frontend uses React 19, Vite 8, JavaScript/JSX, React Router, Tailwind CSS 4, shadcn/ui radix-nova/Radix, Lucide, i18next and Recharts. Colors follow the Storm Harbor product website. Technical documentation is English; the application has the same 25 locales as stormharbor.io, with en-GB as default and RTL layouts for Arabic, Hebrew and Urdu. Every catalog includes all 109 UI/error/demo messages. The product website stays in its existing repository.
+The selected frontend uses React 19, Vite 8, JavaScript/JSX, React Router, Tailwind CSS 4, shadcn/ui radix-nova/Radix, Lucide, i18next, Recharts and JointJS Core 4.3.4. Colors follow the Storm Harbor product website. Technical documentation is English; the application has the same 25 locales as stormharbor.io, with en-GB as default and RTL layouts for Arabic, Hebrew and Urdu. Every catalog includes all 142 UI/error/demo messages. The product website stays in its existing repository.
 
 ## Development and validation
 
@@ -10,6 +10,8 @@ Use Node 26.10.0 and the checked-in Yarn 4.18.0 strict PnP toolchain; no npm loc
 ```sh
 node .yarn/releases/yarn-4.18.0.cjs install --immutable
 node .yarn/releases/yarn-4.18.0.cjs format:check
+node .yarn/releases/yarn-4.18.0.cjs test:tooling
+node .yarn/releases/yarn-4.18.0.cjs test:contracts
 node .yarn/releases/yarn-4.18.0.cjs test:coverage
 node .yarn/releases/yarn-4.18.0.cjs build
 node .yarn/releases/yarn-4.18.0.cjs exec playwright install chromium
@@ -18,7 +20,9 @@ node .yarn/releases/yarn-4.18.0.cjs test:browser
 
 `dev` starts Vite locally. Browser acceptance normally serves the built artifact on loopback port 4179. Set `LENS_TEST_ORIGIN` to an owned local container origin to validate the actual runtime. `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` optionally selects an already installed matching Chromium. Do not point ordinary tests at customer or production environments.
 
-Vitest includes all maintained executable frontend source, including bootstrap, i18n and unimported modules; targets are 100% independently for statements, branches, functions and lines. Playwright records 33 separate browser scenarios (8 sandbox journeys plus 25 locale journeys). Mocks and synthetic filtering do not qualify authoritative backend identity, tenancy, workload permissions or real recovery. Coverage reports, traces and screenshots are generated artifacts.
+`test:contracts` additionally needs Go 1.26.11. It generates browser YAML drafts across providers, regions, exercise/restore and permitted provisioning choices, then validates them with the published `storm-lib-recovery-contracts` v0.1.0-alpha.1 module, pinned in `test/contracts/go.mod` and `go.sum`. It imports no sibling checkout and makes no cloud call. Exercise drafts require ephemeral targets, run-owned cleanup and a TTL even when reusing a target; restore drafts retain their target and omit TTL. Run-owned cleanup never permits deleting an existing project or unrelated assets. CI qualifies these producer/consumer semantics independently of UI coverage.
+
+Vitest includes all maintained executable frontend source, including bootstrap, i18n and unimported modules; targets are 100% independently for statements, branches, functions and lines. Playwright records 41 separate browser scenarios (8 initial sandbox journeys, 8 expanded workbench journeys and 25 locale journeys). Unit tests replace only the external SVG engine boundary; browser scenarios use real JointJS shapes/links, selection, zoom and viewport. Mocks and synthetic filtering do not qualify authoritative backend identity, tenancy, workload permissions or real recovery. Coverage reports, traces and screenshots are generated artifacts.
 
 ## Local Docker Compose preview
 
@@ -49,7 +53,7 @@ node tools/compose-local.mjs down
 
 `docker compose down` also stops the local project. To use another loopback port, set `HARBOR_LENS_PORT`, for example `HARBOR_LENS_PORT=4190 node tools/compose-local.mjs up`. The project is named `harbor-lens-local`; do not run parallel copies under that same name. Source changes need another build/start; this is the static runtime rather than a hot-reload server. `yarn compose:up` / `yarn compose:down` are equivalent shortcuts with the project toolchain installed.
 
-Compose binds only to `127.0.0.1`, drops capabilities, runs as UID/GID 65532, uses a read-only root plus bounded `/tmp`, and limits CPU, memory and process count. The image targets `linux/amd64`, matching the selected Cloud Run delivery; other host architectures need Docker emulation. Readiness is an actual HTTP request to `/healthz`; Nginx configuration validation is not an application health check. CI builds this Compose runtime and runs all 33 browser journeys against it before stopping its own separate test project.
+Compose binds only to `127.0.0.1`, drops capabilities, runs as UID/GID 65532, uses a read-only root plus bounded `/tmp`, and limits CPU, memory and process count. The image targets `linux/amd64`, matching the selected Cloud Run delivery; other host architectures need Docker emulation. Readiness is an actual HTTP request to `/healthz`; Nginx configuration validation is not an application health check. CI builds this Compose runtime and runs all 41 browser journeys against it before stopping its own separate test project.
 
 ## Cloud Run delivery
 
@@ -61,7 +65,15 @@ Infrastructure, scoped WIF, registry, runtime shell, protected edge, certificate
 
 The demo has no real sign-in, MFA assurance, company membership, metric collector or recovery executor. Observation/operation stay disabled. Real protected access must support company-selected OIDC (later qualified SAML), Google/GitHub and verified mandatory MFA, through core Go session/identity boundaries. No public toggle or synthetic session can grant those capabilities.
 
-Recharts renders illustrative metrics. The current topology is a static synthetic projection with a text alternative. Advanced scoped graphs are planned with JointJS Community/Core (MPL-2.0), not the paid JointJS+ extensions; neither package is installed in this initial slice. Verify capability availability and licenses before integration. Do not claim the advanced graph editor, provider adapters, real measured RTO/RPO or production readiness exists.
+The reference workbench preserves the original layout and deepens its contents:
+
+- Overview/infrastructure: four explicit readiness checks and two outstanding gaps, plus Recharts CPU, service-latency and replication-lag series with units and distinct values. These are fixture checks, not a recovery certification.
+- Topology: real JointJS Core renders eight scoped synthetic resources and eight dependencies, with SVG selection, zoom/viewport controls, a keyboard-accessible resource list and a detail inspector. Kubernetes, managed PostgreSQL/Cloud SQL, backup, secret-reference, Terraform and recovery-target fixtures are representative examples, not all resources counted in the Harbor inventory. The latest session run highlights its phase/outcome.
+- Recovery: choose exercise or restore, target Harbor/provider, region, existing target or a new isolated GCP exercise project. The draft uses the core `RecoveryConfiguration` envelope. A new project is limited to GCP exercises; create versus restore and provider-region choices are checked in the synthetic model. Logical provider/placement/secret references need manual private bindings. The YAML and plan are frozen while the simulation runs.
+- Scenarios: success, unavailable backup, policy denial, failed verification, timeout and partial recovery. Failures stop at their configured phase; cancelled/failed runs remain terminal. Explicit retry creates a separate successful-scenario attempt with the same target/configuration and a link to its predecessor, without changing the original evidence. The user advances that attempt independently; retry does not imply a real remediation.
+- History: three clearly labeled reference fixtures (success/failure/cancellation), duration comparison, phase timelines/codes and inspectable session runs. Reference IDs are separate from session `SIM-*` runs. All durations are deterministic illustrative seconds, not elapsed recovery measurements; all data remains in memory.
+
+JointJS Core is the free [MPL-2.0 edition](https://www.jointjs.com/license), pinned as `@joint/core` 4.3.4. No JointJS+ package or paid extension is used. Upstream source is unmodified and available at the versioned [JointJS repository](https://github.com/clientIO/joint/tree/v4.3.4); the distribution preserves its license text in `THIRD_PARTY_NOTICES.txt`. General editing, provider discovery, customer-scoped graph authorization and production recovery remain unimplemented.
 
 The initial eager bundle includes the demo views and chart toolkit; route/chart splitting and measured accessibility/performance budgets remain production work. No third-party analytics, remote fonts or shared customer corpus is introduced.
 
@@ -73,6 +85,6 @@ The expanded demo has a finite acceptance scope, separate from real provider int
 - Gap analysis and checklist, phase outcomes, cancelled/failed/completed runs and run detail/history, all explicitly simulated.
 - Complete 25-locale, RTL, responsive and browser acceptance for the added views.
 
-These additions are planned, not implemented by the local Compose delivery. Real SSO/MFA, scoped collectors, approvals, cloud mutations and measured recovery outcomes have separate contracts and qualification gates. A complete synthetic demo is not production recovery readiness.
+The workbench implements the bounded examples above. General graph editing/expansion/filtering, complete Terraform state/drift exploration, richer workload catalogs and end-to-end provider coverage remain later work. Real SSO/MFA, scoped collectors, approvals, cloud mutations and measured recovery outcomes have separate contracts and qualification gates. A complete synthetic demo is not production recovery readiness.
 
 Core Go APIs, CLI, GitHub App/bots, collectors, orchestration and controllers stay in [storm-harbor-control-plane](https://github.com/Storm-Harbor/storm-harbor-control-plane). Follow the [Lens plan](https://github.com/Storm-Harbor/storm-harbor-control-plane/blob/master/docs/SPECS-HARBOR-LENS.md), [sandbox issue #1](https://github.com/Storm-Harbor/harbor-lens/issues/1) and shared [engineering guidance](https://github.com/Storm-Harbor/.github/blob/master/AGENTS.md). Native issues own current lifecycle.
