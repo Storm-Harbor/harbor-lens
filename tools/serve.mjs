@@ -12,6 +12,7 @@ for (const path of [
   "/index.html",
   "/infrastructure",
   "/topology",
+  "/journeys",
   "/recovery",
   "/history",
 ])

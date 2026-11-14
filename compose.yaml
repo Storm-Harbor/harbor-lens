@@ -1,0 +1,22 @@
+name: harbor-lens-local
+
+services:
+  lens:
+    image: harbor-lens:local
+    platform: linux/amd64
+    build:
+      context: ${HARBOR_LENS_BUILD_CONTEXT:-.}
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:${HARBOR_LENS_PORT:-4180}:8080"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=32m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 128m
+    cpus: 1
+    pids_limit: 128
+    init: true
+    restart: "no"
+    stop_grace_period: 10s

@@ -12,6 +12,7 @@ import {
   Plus,
   Menu,
   X,
+  Workflow,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -24,15 +25,26 @@ import { Button } from "@/components/ui/button";
 import { LocaleSelect } from "@/components/ui/locale-select";
 import { localeInfo } from "@/locales/config";
 import {
+  Readiness,
+  ResourceExplorer,
+  DemoMetrics,
+  JourneyDesigner,
+  RunDetails,
+  ReferenceHistory,
+} from "@/components/demo-workbench";
+import { Journeys } from "@/components/journeys";
+import {
   createState,
   scopeData,
   changeScope,
   addHarbor,
   startRun,
+  startJourney,
   advanceRun,
   scopes,
   providers,
   phases,
+  retryRun,
 } from "@/model.mjs";
 import mark from "@/mark.svg";
 
@@ -40,6 +52,7 @@ const routes = {
   overview: "/",
   inventory: "/infrastructure",
   topology: "/topology",
+  journeys: "/journeys",
   recovery: "/recovery",
   activity: "/history",
 };
@@ -47,6 +60,7 @@ const glyphs = {
   overview: LayoutDashboard,
   inventory: Server,
   topology: Network,
+  journeys: Workflow,
   recovery: RotateCcw,
   activity: ClipboardList,
 };
@@ -104,7 +118,7 @@ function HarborTable({ harbors, t }) {
     </div>
   );
 }
-function History({ data, t, navigate }) {
+function History({ data, t, navigate, onInspect }) {
   if (!data.runs.length)
     return (
       <div className="empty">
@@ -134,7 +148,9 @@ function History({ data, t, navigate }) {
           {data.runs.map((r) => (
             <tr key={r.id}>
               <th scope="row" className="mono">
-                {r.id}
+                <button className="run-link" onClick={() => onInspect(r.id)}>
+                  {r.id}
+                </button>
               </th>
               <td>{data.harbors.find((h) => h.id === r.target).name}</td>
               <td>
@@ -173,8 +189,34 @@ export default function App({ onLogout }) {
   const [open, setOpen] = useState(false);
   const [formError, setFormError] = useState("");
   const [message, setMessage] = useState("");
+  const [drafts, setDrafts] = useState({});
+  const [inspectedRun, setInspectedRun] = useState("");
   const data = scopeData(state);
   const activeRun = data.runs.find((r) => r.status === "running");
+  const config = drafts[state.scope] || {
+    target: data.harbors[0].id,
+    scenario: "success",
+    purpose: "exercise",
+    provisioning: "existing",
+    region: data.harbors[0].region,
+  };
+  const selectedRun = data.runs.find((run) => run.id === inspectedRun);
+  function changeConfig(next) {
+    setDrafts((previous) => ({ ...previous, [state.scope]: next }));
+  }
+  function selectTarget(id) {
+    const harbor = data.harbors.find((item) => item.id === id);
+    if (!harbor) {
+      setMessage("invalidTarget");
+      return;
+    }
+    changeConfig({
+      ...config,
+      target: id,
+      region: harbor.region,
+      provisioning: "existing",
+    });
+  }
 
   useEffect(() => {
     document.documentElement.lang = i18n.resolvedLanguage;
@@ -219,7 +261,7 @@ export default function App({ onLogout }) {
   function submitRun(event) {
     event.preventDefault();
     const target = new FormData(event.currentTarget).get("target");
-    update((next) => startRun(next, target), "startDone");
+    update((next) => startRun(next, target, config), "startDone");
   }
 
   const pill = <span className="pill">{t("synthetic")}</span>;
@@ -370,6 +412,7 @@ export default function App({ onLogout }) {
                   </article>
                 ))}
               </div>
+              <Readiness scope={state.scope} />
               <Card
                 title={t("landscape")}
                 tag={
@@ -431,51 +474,78 @@ export default function App({ onLogout }) {
                   </Button>
                 </section>
               </div>
+              <DemoMetrics />
             </>
           )}
           {view === "inventory" && (
-            <Card title={t("landscape")} tag={pill}>
-              <p className="card-description">{t("inventoryText")}</p>
-              <HarborTable harbors={data.harbors} t={t} />
-              <div className="metric-list">
-                {data.harbors.map((h) => (
-                  <article key={h.id}>
-                    <strong>{h.name}</strong>
-                    <span>
-                      {t("cpu")}:{" "}
-                      {h.cpu === null ? t("notMeasured") : `${h.cpu}%`}
-                    </span>
-                    <span>
-                      {t("freshness")}: {h.age === null ? t("unknown") : h.age}
-                    </span>
-                  </article>
-                ))}
-              </div>
-              <p className="caption">{t("unknownNote")}</p>
-            </Card>
+            <>
+              <Card title={t("landscape")} tag={pill}>
+                <p className="card-description">{t("inventoryText")}</p>
+                <HarborTable harbors={data.harbors} t={t} />
+                <div className="metric-list">
+                  {data.harbors.map((h) => (
+                    <article key={h.id}>
+                      <strong>{h.name}</strong>
+                      <span>
+                        {t("cpu")}:{" "}
+                        {h.cpu === null ? t("notMeasured") : `${h.cpu}%`}
+                      </span>
+                      <span>
+                        {t("freshness")}:{" "}
+                        {h.age === null ? t("unknown") : h.age}
+                      </span>
+                    </article>
+                  ))}
+                </div>
+                <p className="caption">{t("unknownNote")}</p>
+              </Card>
+              <Readiness scope={state.scope} />
+              <DemoMetrics />
+            </>
           )}
           {view === "topology" && (
-            <Card title={t("topology")} tag={pill}>
-              <p className="card-description">{t("topologyText")}</p>
-              <ol className="topology" aria-label={t("diagramLabel")}>
-                {["gateway", "workloads", "database", "backups"].map((key) => (
-                  <li key={key}>
-                    <span className="node-icon">
-                      <Network aria-hidden="true" />
-                    </span>
-                    <strong>{t(key)}</strong>
-                    <span>{t("synthetic")}</span>
-                  </li>
-                ))}
-              </ol>
-              <p className="caption">
-                {t("gateway")} → {t("workloads")} → {t("database")} →{" "}
-                {t("backups")} · {t("depends")}
-              </p>
-            </Card>
+            <ResourceExplorer
+              key={state.scope}
+              scope={state.scope}
+              run={data.runs[0]}
+            />
+          )}
+          {view === "journeys" && (
+            <Journeys
+              key={state.scope}
+              scope={state.scope}
+              data={data}
+              config={config}
+              activeRun={activeRun}
+              onStart={() =>
+                update(
+                  (next) => startJourney(next, config.target, config),
+                  "startDone",
+                )
+              }
+              onAdvance={(id) =>
+                update((next) => advanceRun(next, id, false), "advanceDone")
+              }
+              onCancel={(id) =>
+                update((next) => advanceRun(next, id, true), "advanceDone")
+              }
+              onRetry={(id) =>
+                update((next) => retryRun(next, id), "startDone")
+              }
+              onConfigure={() => navigate("recovery")}
+            />
           )}
           {view === "recovery" && (
             <>
+              <JourneyDesigner
+                scope={state.scope}
+                harbors={data.harbors}
+                config={activeRun || config}
+                target={activeRun ? activeRun.target : config.target}
+                onChange={changeConfig}
+                onTargetChange={selectTarget}
+                locked={Boolean(activeRun)}
+              />
               <div className="two-columns">
                 <Card title={t("journey")} tag={pill}>
                   <p className="card-description">{t("recoveryText")}</p>
@@ -525,14 +595,6 @@ export default function App({ onLogout }) {
                     </div>
                   ) : (
                     <form id="run-form" onSubmit={submitRun}>
-                      <label htmlFor="target">{t("target")}</label>
-                      <select id="target" name="target">
-                        {data.harbors.map((h) => (
-                          <option key={h.id} value={h.id}>
-                            {h.name}
-                          </option>
-                        ))}
-                      </select>
                       <Button variant="default" type="submit">
                         <RotateCcw aria-hidden="true" />
                         {t("start")}
@@ -560,15 +622,54 @@ export default function App({ onLogout }) {
                 </Card>
               </div>
               <Card title={t("activity")}>
-                <History data={data} t={t} navigate={navigate} />
+                <History
+                  data={data}
+                  t={t}
+                  navigate={navigate}
+                  onInspect={setInspectedRun}
+                />
+                {data.runs.length > 0 && (
+                  <>
+                    <RunDetails run={selectedRun || data.runs[0]} t={t} />
+                    {["failed", "cancelled"].includes(
+                      (selectedRun || data.runs[0]).status,
+                    ) && (
+                      <div className="retry-action">
+                        <Button
+                          onClick={() =>
+                            update(
+                              (next) =>
+                                retryRun(
+                                  next,
+                                  (selectedRun || data.runs[0]).id,
+                                ),
+                              "startDone",
+                            )
+                          }
+                        >
+                          {t("retry")}
+                        </Button>
+                      </div>
+                    )}
+                  </>
+                )}
               </Card>
             </>
           )}
           {view === "activity" && (
-            <Card title={t("activity")}>
-              <p className="card-description">{t("historyText")}</p>
-              <History data={data} t={t} navigate={navigate} />
-            </Card>
+            <>
+              <ReferenceHistory />
+              <Card title={t("activity")}>
+                <p className="card-description">{t("historyText")}</p>
+                <History
+                  data={data}
+                  t={t}
+                  navigate={navigate}
+                  onInspect={setInspectedRun}
+                />
+                {selectedRun && <RunDetails run={selectedRun} t={t} />}
+              </Card>
+            </>
           )}
           {!view && (
             <Card title={t("notFound")}>
@@ -588,6 +689,8 @@ export default function App({ onLogout }) {
               title={t("resetNote")}
               onClick={() => {
                 setState(createState());
+                setDrafts({});
+                setInspectedRun("");
                 setMessage("resetDone");
               }}
             >
