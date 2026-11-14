@@ -21,8 +21,10 @@ export function Diagram({ nodes, selected, onSelect, t }) {
   const [pan, setPan] = useState(0);
   useEffect(() => {
     const graph = new dia.Graph({}, { cellNamespace: shapes });
+    const paperElement = document.createElement("div");
+    host.current.append(paperElement);
     const paper = new dia.Paper({
-      el: host.current,
+      el: paperElement,
       model: graph,
       width: "100%",
       height: "100%",

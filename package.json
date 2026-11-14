@@ -13,7 +13,7 @@
     "test:coverage": "vitest run --configLoader runner --coverage",
     "test:browser": "playwright test",
     "test:tooling": "node --test test/tooling/*.test.mjs",
-    "test:contracts": "go -C test/contracts test ./...",
+    "test:contracts": "go -C test/contracts test -count=1 ./...",
     "compose:up": "node tools/compose-local.mjs up",
     "compose:down": "node tools/compose-local.mjs down",
     "format:check": "prettier --check src test tools index.html *.js *.mjs *.json compose.yaml .github/workflows/*.yml",

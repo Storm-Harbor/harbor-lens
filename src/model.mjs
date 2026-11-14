@@ -1,3 +1,5 @@
+import { initializeJourney, advanceJourney } from "./journey.mjs";
+
 export const scopes = ["demo-atlas", "demo-orbit"];
 export const providers = [
   "GCP",
@@ -162,6 +164,10 @@ export function startRun(state, harborId, settings = {}) {
 export function advanceRun(state, runId, cancel) {
   const run = scopeData(state).runs.find((r) => r.id === runId);
   if (!run || run.status !== "running") return "invalidRun";
+  if (run.workflow) {
+    advanceJourney(run, cancel);
+    return null;
+  }
   if (cancel) run.status = "cancelled";
   else {
     run.seconds += phaseSeconds[run.phase];
@@ -180,6 +186,14 @@ export function retryRun(state, runId) {
     return "invalidRun";
   const error = startRun(state, run.target, { ...run, scenario: "success" });
   if (error) return error;
+  if (run.workflow) initializeJourney(state.runs[0]);
   state.runs[0].retryOf = runId;
+  return null;
+}
+
+export function startJourney(state, harborId, settings) {
+  const error = startRun(state, harborId, settings);
+  if (error) return error;
+  initializeJourney(state.runs[0]);
   return null;
 }

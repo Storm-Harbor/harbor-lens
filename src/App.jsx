@@ -12,6 +12,7 @@ import {
   Plus,
   Menu,
   X,
+  Workflow,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -31,12 +32,14 @@ import {
   RunDetails,
   ReferenceHistory,
 } from "@/components/demo-workbench";
+import { Journeys } from "@/components/journeys";
 import {
   createState,
   scopeData,
   changeScope,
   addHarbor,
   startRun,
+  startJourney,
   advanceRun,
   scopes,
   providers,
@@ -49,6 +52,7 @@ const routes = {
   overview: "/",
   inventory: "/infrastructure",
   topology: "/topology",
+  journeys: "/journeys",
   recovery: "/recovery",
   activity: "/history",
 };
@@ -56,6 +60,7 @@ const glyphs = {
   overview: LayoutDashboard,
   inventory: Server,
   topology: Network,
+  journeys: Workflow,
   recovery: RotateCcw,
   activity: ClipboardList,
 };
@@ -503,6 +508,31 @@ export default function App({ onLogout }) {
               key={state.scope}
               scope={state.scope}
               run={data.runs[0]}
+            />
+          )}
+          {view === "journeys" && (
+            <Journeys
+              key={state.scope}
+              scope={state.scope}
+              data={data}
+              config={config}
+              activeRun={activeRun}
+              onStart={() =>
+                update(
+                  (next) => startJourney(next, config.target, config),
+                  "startDone",
+                )
+              }
+              onAdvance={(id) =>
+                update((next) => advanceRun(next, id, false), "advanceDone")
+              }
+              onCancel={(id) =>
+                update((next) => advanceRun(next, id, true), "advanceDone")
+              }
+              onRetry={(id) =>
+                update((next) => retryRun(next, id), "startDone")
+              }
+              onConfigure={() => navigate("recovery")}
             />
           )}
           {view === "recovery" && (

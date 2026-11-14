@@ -2,15 +2,20 @@
 // @joint/core runtime and verifies its SVG, links, selection and viewport.
 export const papers = [];
 class Cell {
+  static define(type) {
+    return class extends Cell {
+      constructor(options) {
+        super({ ...options, type });
+      }
+    };
+  }
   constructor(options) {
     Object.assign(this, options);
     this.attributes = options.attrs;
   }
   attr(next) {
-    this.attributes = {
-      ...this.attributes,
-      body: { ...this.attributes.body, ...next.body },
-    };
+    for (const [key, value] of Object.entries(next))
+      this.attributes[key] = { ...this.attributes[key], ...value };
   }
 }
 export const shapes = { standard: { Rectangle: Cell, Link: Cell } };
@@ -44,7 +49,7 @@ export const dia = {
       this.pan = value;
     }
     remove() {
-      this.svg.remove();
+      this.options.el.remove();
       this.removed = true;
     }
   },
