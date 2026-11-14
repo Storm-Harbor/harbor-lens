@@ -18,4 +18,5 @@ COPY --chown=65532:65532 --chmod=0444 nginx.conf /etc/nginx/conf.d/nginx.default
 COPY --from=builder --chown=65532:65532 /app/dist /usr/share/nginx/html
 USER 65532:65532
 EXPOSE 8080
-HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=5 CMD ["/usr/sbin/nginx", "-t", "-c", "/etc/nginx/nginx.conf"]
+# Readiness is an external HTTP request to /healthz; nginx -t only checks config.
+HEALTHCHECK NONE

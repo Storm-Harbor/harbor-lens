@@ -77,7 +77,7 @@ test("navigation, localization, unknown signals, diagram alternatives and unavai
   expect(screen.getByText("CPU utilization: Not measured")).toBeVisible();
   expect(screen.getByText("Fixture age (min): Unknown")).toBeVisible();
   await go(user, "topology");
-  expect(screen.getAllByRole("listitem")).toHaveLength(4);
+  expect(screen.getAllByRole("listitem")).toHaveLength(8);
   for (const lang of ["pt-BR", "en-GB"]) {
     await user.selectOptions(document.getElementById("locale"), lang);
     for (const view of [
@@ -148,7 +148,7 @@ test("scoped simulation completion, cancellation, history, invalid target/scope 
   await go(user, "recovery");
   const target = document.getElementById("target");
   target.add(new Option("foreign", "orbit-primary"));
-  await user.selectOptions(target, "orbit-primary");
+  target.value = "orbit-primary";
   await click(user, "Start simulation");
   expect(screen.getByRole("status")).toHaveTextContent(
     "Select a Harbor in this demo project.",

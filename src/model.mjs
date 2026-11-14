@@ -7,6 +7,29 @@ export const providers = [
   "Oracle Cloud",
 ];
 export const phases = ["prepare", "restore", "verify"];
+export const scenarios = [
+  "success",
+  "backupFailure",
+  "policyFailure",
+  "verifyFailure",
+  "timeout",
+  "partialFailure",
+];
+export const failurePhases = {
+  backupFailure: 1,
+  policyFailure: 0,
+  verifyFailure: 2,
+  timeout: 2,
+  partialFailure: 2,
+};
+export const phaseSeconds = [120, 360, 90];
+export const providerRegions = {
+  GCP: ["europe-west1", "europe-west4", "us-central1"],
+  AWS: ["eu-west-1", "eu-central-1"],
+  Azure: ["westeurope", "northeurope"],
+  DigitalOcean: ["fra1", "ams3"],
+  "Oracle Cloud": ["eu-frankfurt-1", "eu-amsterdam-1"],
+};
 
 const initialHarbors = [
   {
@@ -97,10 +120,28 @@ export function addHarbor(state, label, provider) {
   return null;
 }
 
-export function startRun(state, harborId) {
+export function startRun(state, harborId, settings = {}) {
   const { harbors, runs } = scopeData(state);
-  if (!harbors.some((h) => h.id === harborId)) return "invalidTarget";
+  const harbor = harbors.find((h) => h.id === harborId);
+  if (!harbor) return "invalidTarget";
   if (runs.some((r) => r.status === "running")) return "alreadyRunning";
+  const {
+    scenario = "success",
+    purpose = "exercise",
+    provisioning = "existing",
+    region = harbor.region,
+  } = settings;
+  if (
+    !scenarios.includes(scenario) ||
+    !["exercise", "restore"].includes(purpose) ||
+    !["existing", "create"].includes(provisioning) ||
+    !(
+      providerRegions[harbor.provider].includes(region) || region === "sandbox"
+    ) ||
+    (provisioning === "create" &&
+      (harbor.provider !== "GCP" || purpose !== "exercise"))
+  )
+    return "invalidSimulation";
   state.sequence++;
   state.runs.unshift({
     id: `SIM-${String(state.sequence).padStart(3, "0")}`,
@@ -108,6 +149,12 @@ export function startRun(state, harborId) {
     target: harborId,
     phase: 0,
     status: "running",
+    scenario,
+    purpose,
+    provisioning,
+    region,
+    seconds: 0,
+    retryOf: null,
   });
   return null;
 }
@@ -117,8 +164,22 @@ export function advanceRun(state, runId, cancel) {
   if (!run || run.status !== "running") return "invalidRun";
   if (cancel) run.status = "cancelled";
   else {
-    run.phase++;
-    if (run.phase === phases.length) run.status = "completed";
+    run.seconds += phaseSeconds[run.phase];
+    if (failurePhases[run.scenario] === run.phase) run.status = "failed";
+    else {
+      run.phase++;
+      if (run.phase === phases.length) run.status = "completed";
+    }
   }
+  return null;
+}
+
+export function retryRun(state, runId) {
+  const run = scopeData(state).runs.find((item) => item.id === runId);
+  if (!run || !["failed", "cancelled"].includes(run.status))
+    return "invalidRun";
+  const error = startRun(state, run.target, { ...run, scenario: "success" });
+  if (error) return error;
+  state.runs[0].retryOf = runId;
   return null;
 }

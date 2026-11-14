@@ -17,15 +17,24 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 26.10.0
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16
+        with:
+          go-version: 1.26.11
+          cache-dependency-path: test/contracts/go.sum
       - run: node .yarn/releases/yarn-4.18.0.cjs install --immutable
       - run: node .yarn/releases/yarn-4.18.0.cjs format:check
+      - run: node .yarn/releases/yarn-4.18.0.cjs test:tooling
+      - name: Check drafts against the published recovery contract
+        run: |
+          test -z "$(gofmt -l test/contracts/*.go)"
+          node .yarn/releases/yarn-4.18.0.cjs test:contracts
       - run: node .yarn/releases/yarn-4.18.0.cjs build
       - run: node .yarn/releases/yarn-4.18.0.cjs test:coverage
       - run: node .yarn/releases/yarn-4.18.0.cjs exec playwright install --with-deps chromium
-      - name: Build the actual static runtime
-        run: docker build --platform linux/amd64 -t harbor-lens:ci .
-      - name: Start the isolated non-root runtime
-        run: docker run --detach --name harbor-lens-ci --read-only --tmpfs /tmp:rw,noexec,nosuid,size=32m --cap-drop=ALL --security-opt no-new-privileges --memory=128m --cpus=1 -p 127.0.0.1:4179:8080 harbor-lens:ci
+      - name: Build and start the actual Compose runtime
+        run: docker compose --project-name harbor-lens-ci up --build --detach lens
+        env:
+          HARBOR_LENS_PORT: 4179
       - name: Wait for container readiness
         run: curl --fail --retry 10 --retry-delay 1 --retry-connrefused http://127.0.0.1:4179/healthz
       - run: node .yarn/releases/yarn-4.18.0.cjs test:browser
@@ -33,7 +42,7 @@ jobs:
           LENS_TEST_ORIGIN: http://127.0.0.1:4179/
       - name: Stop the owned test runtime
         if: always()
-        run: docker stop harbor-lens-ci
+        run: docker compose --project-name harbor-lens-ci down --remove-orphans
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:

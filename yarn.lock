@@ -281,6 +281,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@joint/core@npm:4.3.4":
+  version: 4.3.4
+  resolution: "@joint/core@npm:4.3.4"
+  checksum: 10c0/fcd161e788e180a6a5b007b202f5e1392da0a1e99acc7041a4207f1f736c3801a88756e6843e1c9c82a04178bf8b1b327e44e8b849a80971e15889198c1db084
+  languageName: node
+  linkType: hard
+
 "@jridgewell/gen-mapping@npm:^0.3.5":
   version: 0.3.13
   resolution: "@jridgewell/gen-mapping@npm:0.3.13"
@@ -2692,6 +2699,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "harbor-lens@workspace:."
   dependencies:
+    "@joint/core": "npm:4.3.4"
     "@playwright/test": "npm:1.65.0"
     "@tailwindcss/vite": "npm:4.3.3"
     "@testing-library/dom": "npm:10.4.1"
