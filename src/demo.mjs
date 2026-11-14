@@ -1,4 +1,5 @@
 import { scopes, phases, phaseSeconds } from "./model.mjs";
+import { journeyPhaseEvidence } from "./journey.mjs";
 
 export function resourceFixtures(scope) {
   if (!scopes.includes(scope)) return [];
@@ -94,6 +95,7 @@ spec:
 }
 
 export function phaseEvidence(run) {
+  if (run.workflow) return journeyPhaseEvidence(run);
   return phases.map((phase, index) => ({
     phase,
     status:
