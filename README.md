@@ -71,7 +71,21 @@ The owner accepted the existing demo as an initial baseline, then prioritized th
 
 The owner selected `https://lens.stormharbor.io/` on Cloud Run, following a static-container strategy. GitHub Pages is not the Lens host. The Dockerfile pins Node and non-root Chainguard Nginx by digest; only built static files enter the final runtime. The build preserves the production dependency graph's license/notice texts in `THIRD_PARTY_NOTICES.txt`; no private/build-only package is included. Node is a build tool. Nginx listens on 8080, exposes a dependency-free `/healthz`, serves known SPA routes, rejects unknown/API/source paths and prohibits runtime network connections through CSP. No authenticated backend exists in this slice.
 
-Infrastructure, scoped WIF, registry, runtime shell, protected edge, certificates and DNS must be qualified before deployment. The application release will own immutable images, revisions/traffic and rollback after those producer gates; this initial CI does not authenticate to GCP, push an image or deploy. User manual PR merge, infrastructure applies and an actual live URL check precede a publication claim. Keep `stormharbor.io` pointing at the product website.
+The scoped WIF publisher and immutable registry are qualified infrastructure producers. On a push to `master`, or an explicit dispatch on `master`, the workflow first runs the complete sandbox checks. Its dependent image job builds the pinned `linux/amd64` static container before obtaining a 15-minute WIF access token. Only that job has `id-token: write` and uses the `production` environment. PRs, `develop`, forks and mismatched immutable repository/owner IDs cannot publish. There is no private workflow/package dependency or long-lived cloud key.
+
+The production environment supplies these non-secret deployment bindings; never add credential values:
+
+| Variable | Purpose |
+| --- | --- |
+| `GCP_PROJECT_ID` | Product hosting project |
+| `GCP_REGION` | Applied registry location |
+| `ARTIFACT_REGISTRY_REPOSITORY` | Applied `harbor-lens` repository |
+| `GCP_WORKLOAD_IDENTITY_PROVIDER` | Qualified repository/ref/environment-restricted WIF provider |
+| `GCP_PUBLISHER_SERVICE_ACCOUNT` | Dedicated scoped image publisher |
+
+Environment deployment branches must allow only `master`. The publisher validates the bindings before authentication and uses the hosting project explicitly for API quota. It tags images with the full source commit, never `latest`. An existing tag is reused only after pulling its digest and verifying source/revision labels, Linux/amd64 and the non-root runtime identity. A new push additionally verifies the pulled image matches the local build. Denial, an unavailable registry, a conflicting tag or a mismatched image stops publication. The allowlisted receipt contains the source revision, digest, platform and Actions run; it excludes bindings, credentials and raw registry responses. Labels and this receipt are publication evidence, not a cryptographically signed build attestation. Tooling tests exercise refusal, first publication, safe rerun and failure paths without cloud access.
+
+This stage publishes an image only. The Terraform-managed runtime shell, protected edge, certificates and DNS still need independent qualification before deployment. Runtime revisions/traffic and rollback follow those producer gates. Production structured/sanitized runtime logging also remains a gate: the current local Nginx logs do not yet satisfy the full production event contract. User manual source merges, infrastructure applies and an actual live URL check precede a publication claim. Keep `stormharbor.io` pointing at the product website.
 
 ## Available and planned
 

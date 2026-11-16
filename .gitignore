@@ -9,3 +9,4 @@ playwright-report/
 .yarn/*
 !.yarn/releases/
 .vite/
+gha-creds-*.json
