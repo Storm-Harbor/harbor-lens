@@ -3,9 +3,10 @@ on:
   push:
     branches: [develop, master]
   pull_request:
+  workflow_dispatch:
 concurrency:
   group: lens-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 permissions:
   contents: read
 jobs:
@@ -50,4 +51,59 @@ jobs:
           path: |
             coverage/
             test-results/
+          if-no-files-found: error
+
+  image:
+    name: Publish qualified preview image
+    needs: sandbox
+    if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      RELEASE_ENVIRONMENT: production
+      GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+      GCP_REGION: ${{ vars.GCP_REGION }}
+      ARTIFACT_REGISTRY_REPOSITORY: ${{ vars.ARTIFACT_REGISTRY_REPOSITORY }}
+      GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+      GCP_PUBLISHER_SERVICE_ACCOUNT: ${{ vars.GCP_PUBLISHER_SERVICE_ACCOUNT }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 26.10.0
+      - name: Validate the release boundary and build before credentials exist
+        run: node tools/publish-image.mjs build
+      - name: Obtain short-lived publisher credentials
+        id: auth
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_PUBLISHER_SERVICE_ACCOUNT }}
+          project_id: ${{ vars.GCP_PROJECT_ID }}
+          token_format: access_token
+          access_token_lifetime: 900s
+          create_credentials_file: false
+          export_environment_variables: false
+      - name: Authenticate Docker to the scoped registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ${{ vars.GCP_REGION }}-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
+      - name: Publish or verify the existing immutable source tag
+        run: node tools/publish-image.mjs publish
+        env:
+          REGISTRY_TOKEN: ${{ steps.auth.outputs.access_token }}
+      - name: Preserve the allowlisted publication receipt
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: preview-image-receipt-${{ github.sha }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/harbor-lens-image-receipt.json
           if-no-files-found: error
