@@ -41,6 +41,8 @@ function image(overrides = {}) {
     Architecture: "amd64",
     Config: {
       User: "65532:65532",
+      StopSignal: "SIGTERM",
+      Entrypoint: ["/usr/bin/harbor-lens-runtime"],
       Labels: {
         "org.opencontainers.image.source":
           "https://github.com/Storm-Harbor/harbor-lens",
@@ -227,6 +229,16 @@ test("wrong source, revision, user, platform or digest cannot qualify an existin
     image({ Architecture: "arm64" }),
     image({ Id: "unverified" }),
     image({ Config: { ...image().Config, User: "0" } }),
+    image({ Config: { ...image().Config, StopSignal: "SIGQUIT" } }),
+    image({ Config: { ...image().Config, Entrypoint: null } }),
+    image({ Config: { ...image().Config, Entrypoint: [] } }),
+    image({ Config: { ...image().Config, Entrypoint: ["/usr/sbin/nginx"] } }),
+    image({
+      Config: {
+        ...image().Config,
+        Entrypoint: ["/usr/bin/harbor-lens-runtime", "unexpected"],
+      },
+    }),
     image({ Config: { ...image().Config, Labels: {} } }),
     image({ RepoDigests: [] }),
   ]) {

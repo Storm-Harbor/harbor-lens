@@ -31,6 +31,14 @@ jobs:
           node .yarn/releases/yarn-4.18.0.cjs test:contracts
       - run: node .yarn/releases/yarn-4.18.0.cjs build
       - run: node .yarn/releases/yarn-4.18.0.cjs test:coverage
+      - name: Qualify the Go static-process supervisor
+        run: |
+          test -z "$(gofmt -l runtime/*.go)"
+          go -C runtime vet ./...
+          go -C runtime test -race -coverprofile=../coverage/static-runtime.out ./...
+          go -C runtime tool cover -func=../coverage/static-runtime.out > coverage/static-runtime-summary.txt
+          cat coverage/static-runtime-summary.txt
+          awk '/^total:/ { found=1; if ($3+0 < 97) exit 1 } END { if (!found) exit 1 }' coverage/static-runtime-summary.txt
       - run: node .yarn/releases/yarn-4.18.0.cjs exec playwright install --with-deps chromium
       - name: Build and start the actual Compose runtime
         run: docker compose --project-name harbor-lens-ci up --build --detach lens
@@ -41,6 +49,11 @@ jobs:
       - run: node .yarn/releases/yarn-4.18.0.cjs test:browser
         env:
           LENS_TEST_ORIGIN: http://127.0.0.1:4179/
+      - name: Verify actual runtime logs, privacy and bounded shutdown
+        run: node tools/check-runtime.mjs
+        env:
+          LENS_TEST_ORIGIN: http://127.0.0.1:4179/
+          HARBOR_LENS_QA_PROJECT: harbor-lens-ci
       - name: Stop the owned test runtime
         if: always()
         run: docker compose --project-name harbor-lens-ci down --remove-orphans
