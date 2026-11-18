@@ -76,6 +76,10 @@ export function verifyImage(image, configuration) {
     image.Os !== "linux" ||
     image.Architecture !== "amd64" ||
     image.Config?.User !== "65532:65532" ||
+    image.Config?.StopSignal !== "SIGTERM" ||
+    !Array.isArray(image.Config?.Entrypoint) ||
+    image.Config.Entrypoint.length !== 1 ||
+    image.Config.Entrypoint[0] !== "/usr/bin/harbor-lens-runtime" ||
     labels?.["org.opencontainers.image.source"] !== source ||
     labels?.["org.opencontainers.image.revision"] !== configuration.sha
   )

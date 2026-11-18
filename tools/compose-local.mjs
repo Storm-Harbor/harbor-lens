@@ -31,6 +31,8 @@ export const buildInputs = [
   "tools/notices.cjs",
   "licenses",
   "src",
+  "runtime/go.mod",
+  "runtime/main.go",
 ];
 
 export function stageBuildContext(

@@ -1,0 +1,5 @@
+module github.com/Storm-Harbor/harbor-lens/runtime
+
+go 1.26.0
+
+toolchain go1.26.11
