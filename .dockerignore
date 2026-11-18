@@ -18,5 +18,8 @@
 !licenses/**
 !src/
 !src/**
+!runtime/
+!runtime/go.mod
+!runtime/main.go
 **/._*
 **/.DS_Store
